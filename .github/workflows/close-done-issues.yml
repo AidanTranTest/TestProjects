@@ -23,11 +23,13 @@ jobs:
     runs-on: ubuntu-latest
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - name: Get Project Data
+        env: 
+          GITHUB_TOKEN: ${{ secrets.PROJECT_ISSUE_CLOSING_PAT }}
+          OWNER: ${{ github.repository_owner }}
+          PROJECT_NUMBER: 1
       - run: |
-          echo ${{ secrets.PROJECT_ISSUE_CLOSING_PAT }} | gh auth login --with-token
-
-          numberQuery=5
-          projects="$(gh api graphql -f org=$OWNER -F number=$numberQuery -f query='
+          projects="$(gh api graphql -f org=$OWNER -F number=$PROJECT_NUMBER -f query='
             query($org: String! $number: Int!) {
               organization(login: $org) {
                 projectNext(number: $number) {
@@ -38,9 +40,5 @@ jobs:
           ')"
 
           echo 'Projects='$projects
-        env:
-          # GITHUB_TOKEN: ${{ secrets.PROJECT_ISSUE_CLOSING_PAT }}
-          OWNER: ${{ github.repository_owner }}
-          # REPO: ${{ github.event.repository.name }}
 
 
