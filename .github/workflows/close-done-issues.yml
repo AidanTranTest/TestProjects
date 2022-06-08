@@ -5,8 +5,8 @@
 name: close-done-issues
 
 on: 
-  # schedule: # Workflow will run every 5th minute. 
-  #   - cron: "*/5 * * * *"
+  schedule: # Workflow will run every 5th minute. 
+    - cron: "*/5 * * * *"
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -31,6 +31,7 @@ jobs:
             query($org: String! $number: Int!) {
               organization(login: $org) {
                 projectNext(number: $number) {
+                  # Assuming there are less than 100 fields
                   fields(first: 100) {
                     nodes {
                       id
@@ -67,6 +68,7 @@ jobs:
                         }
 
                       }
+                      # Assuming there is less than 100 field values.
                       fieldValues(first: 100) {
                         nodes {
                           value
