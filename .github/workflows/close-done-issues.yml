@@ -51,9 +51,8 @@ jobs:
             query($org: String! $number: Int!) {
               organization(login: $org) {
                 projectNext(number: $number) {
-                  items(first: 20) {
+                  items(last: 20) {
                     nodes {
-                      title
                       content {
                         ... on Issue {
                           id
@@ -68,7 +67,7 @@ jobs:
                         }
 
                       }
-                      fieldValues(first: 20) {
+                      fieldValues(first: 100) {
                         nodes {
                           value
                           projectField{
