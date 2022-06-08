@@ -26,7 +26,6 @@ jobs:
         run: |
           # This query will look through all of the fields in a project (beta) for the field that is named "Status" 
           # Then it store the id of the column you labeled as "Done" from the settings value in DONE_OPTION_ID.
-
           gh api graphql -f org=$OWNER -F number=${{ matrix.PROJECT_ENTRY[0] }} -f query='
             query($org: String! $number: Int!) {
               organization(login: $org) {
@@ -95,6 +94,7 @@ jobs:
           # This final step uses the items list generated in the previous step to loop through and close them.
           for issue_id in ${{ env.ISSUES_TO_CLOSE }};
           do
+            # Grabs the item type, there can be different functionality between Issues, PullRequests, and DraftIssues
             itemType="$(gh api graphql -f id=$issue_id -f query='
               query($id: ID!) {
                 node(id: $id) {
