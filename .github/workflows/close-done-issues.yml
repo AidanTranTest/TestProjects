@@ -46,7 +46,7 @@ jobs:
         with:
           project-url: https://github.com/orgs/AidanTranTest/projects/1
           github-token: ${{ secrets.PROJECT_ISSUE_CLOSING_PAT }}
-          item-id: "PNI_lADOBmHj_M4ACdydzgBVzlo"
+          item-id: "PNI_lADOBmHj_M4ACdydzgBVzkM"
           status: "Done"
 
 
