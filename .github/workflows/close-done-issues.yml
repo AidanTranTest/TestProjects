@@ -100,7 +100,7 @@ jobs:
             if [[ $itemType == "Issue" ]]; then
               gh api graphql -f id=$issue_id -f query='
                 mutation($id: ID!) {
-                  closeIssue(input: {issueId: $id stateReason: "COMPLETED"})
+                  closeIssue(input: {issueId: $id stateReason: COMPLETED})
                   {
                     issue {
                       id
