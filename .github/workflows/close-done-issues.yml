@@ -33,6 +33,15 @@ jobs:
                     edges {
                       node {
                         title
+                        fieldValues (first: 5) {
+                          edges {
+                            node {
+                              projectField {
+                                name
+                              }
+                            }
+                          }
+                        }
                       }
                     }
                   }
@@ -42,5 +51,23 @@ jobs:
           ')"
 
           echo 'Projects='$projects
+
+          projects="$(gh api graphql -f org=$OWNER -F number=$PROJECT_NUMBER -f query='
+            query($org: String! $number: Int!) {
+              organization(login: $org) {
+                projectNext(number: $number) {
+                  fields(first: 5) {
+                    edges {
+                      node {
+                        name
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ')"
+
+           echo 'Projects='$projects
 
 
