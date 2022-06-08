@@ -41,7 +41,7 @@ jobs:
             }
           ' > project_data.json
 
-          echo 'DONE_OPTION_ID='$(jq '.data.organization.projectNext.fields.nodes[] | select(.name== "Status")  |.settings | fromjson.options[]' project_data.json)
+          echo 'DONE_OPTION_ID='$(jq '.data.organization.projectNext.fields.nodes[] | select(.name== "Status")  |.settings | fromjson.options[] | select(.name=="Todo") |.id' project_data.json)
           echo $DONE_OPTION_ID
       - name: Get list of matching issues
         run: | 
