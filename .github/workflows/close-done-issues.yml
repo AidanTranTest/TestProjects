@@ -19,7 +19,7 @@ jobs:
   close-done-issues:
     strategy:
       matrix:
-        PROJECT_ENTRY: [[1,"Done"]]
+        PROJECT_ENTRY: [[1,"Done"], [2,"DoneMalone"]]
     runs-on: ubuntu-latest
     env: 
       GITHUB_TOKEN: ${{ secrets.PROJECT_ISSUE_CLOSING_PAT }}
