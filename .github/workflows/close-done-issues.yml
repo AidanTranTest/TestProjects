@@ -93,7 +93,7 @@ jobs:
                   __typename
                 }
               }
-            ')"
+            ' --jq '.data.node.__typename')"
             echo $itemType
 
 
