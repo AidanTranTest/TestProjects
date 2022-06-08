@@ -82,6 +82,6 @@ jobs:
             }
           ' > project_data_2.json
 
-           echo 'Issues='$(jq '.data.organization.projectNext.items.nodes[] | select(.content.closed== "false") ' project_data_2.json)
+           echo 'Issues='echo $(jq '.data.organization.projectNext.items.nodes[] | select(.content.closed== false) | select(.fieldValues.nodes[].value== ${{ env.DONE_OPTION_ID }}) |.content.id' project_data_2.json)
 
 
