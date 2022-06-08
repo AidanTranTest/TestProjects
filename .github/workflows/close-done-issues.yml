@@ -97,13 +97,13 @@ jobs:
             echo $itemType
 
 
-            if [[ $itemType == "Issue" ]] then
+            if [[ $itemType == "Issue" ]]; then
               gh api graphql -f id=$issue_id -f query='
                 mutation($id: ID!) {
                   closeIssue(input: {issueId: $id stateReason: "Closed automatically because issue was marked Done in project board. Performed by Github Action ${GITHUB_WORKFLOW} in repository ${GITHUB_REPOSITORY}"})
                 }
               '
-            elif [[ $itemType == "PullRequest" ]] then
+            elif [[ $itemType == "PullRequest" ]]; then
               echo test
             else
               echo "Unknown item type, doing nothing"
