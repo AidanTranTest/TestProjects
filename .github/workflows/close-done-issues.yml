@@ -101,6 +101,11 @@ jobs:
               gh api graphql -f id=$issue_id -f query='
                 mutation($id: ID!) {
                   closeIssue(input: {issueId: $id stateReason: "Closed automatically because issue was marked Done in project board. Performed by Github Action ${GITHUB_WORKFLOW} in repository ${GITHUB_REPOSITORY}"})
+                  {
+                    issue {
+                      id
+                    }
+                  }
                 }
               '
             elif [[ $itemType == "PullRequest" ]]; then
