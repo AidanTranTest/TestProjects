@@ -86,7 +86,6 @@ jobs:
               }
             }
           ' --jq '.data.organization.projectNext.items.nodes[]' | jq -s > project_data_2.json
-           cat project_data_2.json
            echo 'ISSUES_TO_CLOSE'=$(jq '.[] | select(.content.closed== false) | select(.fieldValues.nodes[].value==${{ env.DONE_OPTION_ID }}) |.content.id' test.json) >> $GITHUB_ENV
       - name: Close issues
         run: | 
