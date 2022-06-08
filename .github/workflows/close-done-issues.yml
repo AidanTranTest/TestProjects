@@ -42,11 +42,11 @@ jobs:
 
            echo 'Projects='$projects
 
-      # - uses: kalgurn/update-project-item-status@main
-      #   with:
-      #     project-url: https://github.com/orgs/AidanTranTest/projects/1
-      #     github-token: ${{ secrets.PROJECT_ISSUE_CLOSING_PAT }}
-      #     item-id: ${{ steps.addItem.outputs.itemId }}
-      #     status: "Done"
+      - uses: kalgurn/update-project-item-status@main
+        with:
+          project-url: https://github.com/orgs/AidanTranTest/projects/1
+          github-token: ${{ secrets.PROJECT_ISSUE_CLOSING_PAT }}
+          item-id: "PNI_lADOBmHj_M4ACdydzgBVzlo"
+          status: "Done"
 
 
