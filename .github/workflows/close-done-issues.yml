@@ -33,11 +33,12 @@ jobs:
                     edges {
                       node {
                         title
-                        fieldValues (first: 5) {
+                        fieldValues (first: 10) {
                           edges {
                             node {
+                              value
                               projectField {
-                                
+                                name
                               }
                             }
                           }
