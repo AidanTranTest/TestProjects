@@ -51,7 +51,7 @@ jobs:
             query($org: String! $number: Int! $endCursor: String) {
               organization(login: $org) {
                 projectNext(number: $number) {
-                  items(last: 20, after: $endCursor) {
+                  items(first: 20, after: $endCursor) {
                     nodes {
                       content {
                         ... on Issue {
