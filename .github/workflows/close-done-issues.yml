@@ -47,8 +47,18 @@ jobs:
                   items(first: 20) {
                     nodes {
                       title
-                      ... on issue {
-                        closed
+                      content {
+                        ... on issue {
+                          id
+                          closed
+                        }
+                        ... on PullRequest {
+                          id
+                        }
+                        ... on DraftIssue {
+                          issue
+                        }
+
                       }
                       fieldValues(first: 20) {
                         nodes {
