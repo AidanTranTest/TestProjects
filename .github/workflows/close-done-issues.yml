@@ -88,7 +88,7 @@ jobs:
           for issue_id in ${{ env.ISSUES_TO_CLOSE }};
           do
             itemType="$(gh api graphql -f org=$OWNER -f id=$issue_id -F number=$PROJECT_NUMBER -f query='
-              query($org: String! $id: String! $number: Int!) {
+              query($org: String! $id: ID! $number: Int!) {
                 node(id: $id) {
                   __typename
                 }
