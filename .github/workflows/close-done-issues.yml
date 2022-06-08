@@ -29,11 +29,11 @@ jobs:
             query($org: String! $number: Int!) {
               organization(login: $org) {
                 projectNext(number: $number) {
-                  views(first: 5) {
-                    edges {
-                      node {
-                        name
-                      }
+                  fields(first: 20) {
+                    node {
+                      id
+                      name
+                      settings
                     }
                   }
                 }
