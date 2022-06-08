@@ -48,6 +48,7 @@ jobs:
       - name: Get list of matching issues
         run: | 
           # This query will look through all of the issues in a project (beta) and generate a list of IDs of the items that are "Open" and in the column marked "Done".
+          echo DONE_OPTION_ID: ${{ env.DONE_OPTION_ID }}
           gh api graphql --paginate -f org=$OWNER -F number=${{ matrix.PROJECT_ENTRY[0] }} -f query='
             query($org: String! $number: Int! $endCursor: String) {
               organization(login: $org) {
@@ -114,7 +115,7 @@ jobs:
                     }
                   }
                 }
-              ' >/dev/null
+              '
             elif [[ $itemType == "PullRequest" ]]; then
               # Uncomment the below code to perform closing of open PRs in the "Done" column.
               # gh api graphql -f id=$issue_id -f query='
