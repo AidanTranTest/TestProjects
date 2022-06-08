@@ -77,6 +77,10 @@ jobs:
                         }
                       }
                     }
+                    pageInfo {
+                      hasNextPage
+                      endCursor
+                    }
                   }
                 }
               }
