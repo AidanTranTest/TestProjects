@@ -41,7 +41,7 @@ jobs:
             }
           ' > project_data.json
 
-          echo 'DONE_OPTION_ID='$(jq '.data.organization.projectNext.fields.nodes[] | select(.name== "Status") |.settings | fromjson.options[] | select(.name=="Done") |.id' project_data.json) >> $GITHUB_ENV
+          echo 'DONE_OPTION_ID='$(jq '.data.organization.projectNext.fields.nodes[] | select(.name== "Status")' project_data.json)
           echo $DONE_OPTION_ID
       - name: Get list of matching issues
         run: | 
