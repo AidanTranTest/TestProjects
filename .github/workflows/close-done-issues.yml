@@ -17,15 +17,17 @@ env:
 
 jobs:
   close-done-issues:
+    strategy:
+      matrix:
+        PROJECT_ENTRY: [[1,"Done"]]
     runs-on: ubuntu-latest
     env: 
       GITHUB_TOKEN: ${{ secrets.PROJECT_ISSUE_CLOSING_PAT }}
       OWNER: ${{ github.repository_owner }}
-      PROJECT_NUMBER: 1
     steps:
       - name: Get ID of Done Status in Project
         run: |
-          gh api graphql -f org=$OWNER -F number=$PROJECT_NUMBER -f query='
+          gh api graphql -f org=$OWNER -F number=${{ matrix.PROJECT_ENTRY[0] }} -f query='
             query($org: String! $number: Int!) {
               organization(login: $org) {
                 projectNext(number: $number) {
@@ -40,12 +42,12 @@ jobs:
               }
             }
           ' > project_data.json
-          echo 'DONE_OPTION_ID='$(jq '.data.organization.projectNext.fields.nodes[] | select(.name== "Status")  |.settings | fromjson.options[] | select(.name=="Done") |.id' project_data.json) >> $GITHUB_ENV
+          echo 'DONE_OPTION_ID='$(jq '.data.organization.projectNext.fields.nodes[] | select(.name== "Status")  |.settings | fromjson.options[] | select(.name==${{ matrix.PROJECT_ENTRY[1] }}) |.id' project_data.json) >> $GITHUB_ENV
       
       - name: Get list of matching issues
         run: | 
           echo ${{ env.DONE_OPTION_ID }}
-          gh api graphql -f org=$OWNER -F number=$PROJECT_NUMBER -f query='
+          gh api graphql -f org=$OWNER -F number=${{ matrix.PROJECT_ENTRY[0] }} -f query='
             query($org: String! $number: Int!) {
               organization(login: $org) {
                 projectNext(number: $number) {
@@ -59,7 +61,6 @@ jobs:
                         }
                         ... on PullRequest {
                           id
-                          closed
                         }
                         ... on DraftIssue {
                           id
@@ -108,16 +109,17 @@ jobs:
                 }
               ' >/dev/null
             elif [[ $itemType == "PullRequest" ]]; then
-              gh api graphql -f id=$issue_id -f query='
-                mutation($id: ID!) {
-                  closePullRequest(input: {pullRequestId: $id})
-                  {
-                    pullRequest {
-                      id
-                    }
-                  }
-                }
-              ' >/dev/null
+              # gh api graphql -f id=$issue_id -f query='
+              #   mutation($id: ID!) {
+              #     closePullRequest(input: {pullRequestId: $id})
+              #     {
+              #       pullRequest {
+              #         id
+              #       }
+              #     }
+              #   }
+              # ' >/dev/null
+              echo This is a Pull Request, doing nothing.
             else
               echo "$itemType is not an Issue or PullRequest, doing nothing"
             fi
