@@ -4,7 +4,7 @@ name: close-done-issues
 
 # Controls when the workflow will run
 on: 
-  # push:
+  push:
   # schedule: # Workflow will run every 5th minute. 
   #   - cron: "*/5 * * * *"
   # # Allows you to run this workflow manually from the Actions tab
@@ -42,7 +42,7 @@ jobs:
               }
             }
           ' > project_data.json
-          echo 'DONE_OPTION_ID='$(jq '.data.organization.projectNext.fields.nodes[] | select(.name== "Status")  |.settings | fromjson.options[] | select(.name==${{ matrix.PROJECT_ENTRY[1] }}) |.id' project_data.json) >> $GITHUB_ENV
+          echo 'DONE_OPTION_ID='$(jq '.data.organization.projectNext.fields.nodes[] | select(.name== "Status")  |.settings | fromjson.options[] | select(.name=="${{ matrix.PROJECT_ENTRY[1] }}") |.id' project_data.json) >> $GITHUB_ENV
       
       - name: Get list of matching issues
         run: | 
