@@ -25,14 +25,33 @@ jobs:
           OWNER: ${{ github.repository_owner }}
           PROJECT_NUMBER: 1
         run: |
+          # projects="$(gh api graphql -f org=$OWNER -F number=$PROJECT_NUMBER -f query='
+          #   query($org: String! $number: Int!) {
+          #     organization(login: $org) {
+          #       projectNext(number: $number) {
+          #         items(first: 20) {
+          #           nodes {
+          #             id
+          #             title
+          #           }
+          #         }
+          #       }
+          #     }
+          #   }
+          # ')"
+
           projects="$(gh api graphql -f org=$OWNER -F number=$PROJECT_NUMBER -f query='
             query($org: String! $number: Int!) {
               organization(login: $org) {
                 projectNext(number: $number) {
                   items(first: 20) {
                     nodes {
-                      id
                       title
+                      fieldValues(first: 20) {
+                        nodes {
+                          value
+                        }
+                      }
                     }
                   }
                 }
@@ -41,12 +60,5 @@ jobs:
           ')"
 
            echo 'Projects='$projects
-
-      - uses: kalgurn/update-project-item-status@main
-        with:
-          project-url: https://github.com/orgs/AidanTranTest/projects/1
-          github-token: ${{ secrets.PROJECT_ISSUE_CLOSING_PAT }}
-          item-id: "PNI_lADOBmHj_M4ACdydzgBVzkM"
-          status: "Done"
 
 
