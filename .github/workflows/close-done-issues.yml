@@ -29,7 +29,7 @@ jobs:
             query($org: String! $number: Int!) {
               organization(login: $org) {
                 projectNext(number: $number) {
-                  items {
+                  items (first: 4) {
                     edges {
                       node {
                         title
