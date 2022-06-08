@@ -102,9 +102,6 @@ jobs:
                 mutation($id: ID!) {
                   closeIssue(input: {issueId: $id stateReason: COMPLETED})
                   {
-                    issue {
-                      id
-                    }
                   }
                 }
               '
