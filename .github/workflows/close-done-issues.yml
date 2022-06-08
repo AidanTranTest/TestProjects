@@ -24,13 +24,10 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - run: |
-          echo $OWNER
+          echo ${{ secrets.PROJECT_ISSUE_CLOSING_PAT }} | gh auth login --with-token
 
-          echo $MY_TOKEN | gh auth login --with-token
-
-          my_org="AidanTranTest"
           numberQuery=5
-          projects="$(gh api graphql -f org=$my_org -F number=$numberQuery -f query='
+          projects="$(gh api graphql -f org=$OWNER -F number=$numberQuery -f query='
             query($org: String! $number: Int!) {
               organization(login: $org) {
                 projectNext(number: $number) {
@@ -42,7 +39,7 @@ jobs:
 
           echo 'Projects='$projects
         env:
-          MY_TOKEN: ${{ secrets.PROJECT_ISSUE_CLOSING_PAT }}
+          # GITHUB_TOKEN: ${{ secrets.PROJECT_ISSUE_CLOSING_PAT }}
           OWNER: ${{ github.repository_owner }}
           # REPO: ${{ github.event.repository.name }}
 
