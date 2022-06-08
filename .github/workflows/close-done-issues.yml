@@ -29,35 +29,7 @@ jobs:
             query($org: String! $number: Int!) {
               organization(login: $org) {
                 projectNext(number: $number) {
-                  items (first: 1) {
-                    edges {
-                      node {
-                        title
-                        fieldValues (first: 10) {
-                          edges {
-                            node {
-                              value
-                              projectField {
-                                name
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          ')"
-
-          echo 'Projects='$projects
-
-          projects="$(gh api graphql -f org=$OWNER -F number=$PROJECT_NUMBER -f query='
-            query($org: String! $number: Int!) {
-              organization(login: $org) {
-                projectNext(number: $number) {
-                  fields(first: 5) {
+                  views(first: 5) {
                     edges {
                       node {
                         name
