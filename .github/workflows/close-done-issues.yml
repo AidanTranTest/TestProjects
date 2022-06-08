@@ -40,12 +40,12 @@ jobs:
               }
             }
           ' > project_data.json
-
           echo 'DONE_OPTION_ID='$(jq '.data.organization.projectNext.fields.nodes[] | select(.name== "Status")  |.settings | fromjson.options[] | select(.name=="Done") |.id' project_data.json) >> $GITHUB_ENV
+      
       - name: Get list of matching issues
         run: | 
           echo ${{ env.DONE_OPTION_ID }}
-          projects="$(gh api graphql -f org=$OWNER -F number=$PROJECT_NUMBER -f query='
+          gh api graphql -f org=$OWNER -F number=$PROJECT_NUMBER -f query='
             query($org: String! $number: Int!) {
               organization(login: $org) {
                 projectNext(number: $number) {
@@ -59,6 +59,7 @@ jobs:
                         }
                         ... on PullRequest {
                           id
+                          closed
                         }
                         ... on DraftIssue {
                           id
@@ -79,8 +80,8 @@ jobs:
                 }
               }
             }
-          ')"
+          ' > project_data_2.json
 
-           echo 'Projects='$projects
+           echo 'Issues='$(jq '.data.organization.projectNext.items.nodes[] | select(.content.closed== "false") ' project_data_2.json)
 
 
