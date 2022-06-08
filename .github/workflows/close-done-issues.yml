@@ -18,7 +18,7 @@ jobs:
         PROJECT_ENTRY: [[1,"Done"], [2,"TestDoneColumnName"]]
     runs-on: ubuntu-latest
     env: 
-    # Replace the below secret with an iTwin PAT. Needs read:ord and write:org and public_repo. Might need more permissions for private repos.
+    # Replace the below secret with an iTwin PAT. Needs read:org and write:org and public_repo. Might need more permissions for private repos.
       GITHUB_TOKEN: ${{ secrets.PROJECT_ISSUE_CLOSING_PAT }}
       OWNER: ${{ github.repository_owner }}
     steps:
