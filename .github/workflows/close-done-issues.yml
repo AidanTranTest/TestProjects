@@ -31,7 +31,7 @@ jobs:
             query($org: String! $number: Int!) {
               organization(login: $org) {
                 projectNext(number: $number) {
-                  fields(first: 20) {
+                  fields(first: 100) {
                     nodes {
                       id
                       name
@@ -47,11 +47,11 @@ jobs:
       - name: Get list of matching issues
         run: | 
           # This query will look through all of the issues in a project (beta) and generate a list of IDs of the items that are "Open" and in the column marked "Done".
-          gh api graphql -f org=$OWNER -F number=${{ matrix.PROJECT_ENTRY[0] }} -f query='
-            query($org: String! $number: Int!) {
+          gh api graphql --paginate -f org=$OWNER -F number=${{ matrix.PROJECT_ENTRY[0] }} -f query='
+            query($org: String! $number: Int! $endCursor: String) {
               organization(login: $org) {
                 projectNext(number: $number) {
-                  items(last: 20) {
+                  items(last: 20, after: $endCursor) {
                     nodes {
                       content {
                         ... on Issue {
@@ -82,8 +82,8 @@ jobs:
               }
             }
           ' > project_data_2.json
-
-           echo 'ISSUES_TO_CLOSE'=$(jq '.data.organization.projectNext.items.nodes[] | select(.content.closed== false) | select(.fieldValues.nodes[].value== ${{ env.DONE_OPTION_ID }}) |.content.id' project_data_2.json)  >> $GITHUB_ENV
+           cat project_data_2.json
+          #  echo 'ISSUES_TO_CLOSE'=$(jq '.data.organization.projectNext.items.nodes[] | select(.content.closed== false) | select(.fieldValues.nodes[].value== ${{ env.DONE_OPTION_ID }}) |.content.id' project_data_2.json)  >> $GITHUB_ENV
       - name: Close issues
         run: | 
           # This final step uses the items list generated in the previous step to loop through and close them.
