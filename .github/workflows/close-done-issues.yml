@@ -49,6 +49,7 @@ jobs:
                       title
                       fieldValues(first: 20) {
                         nodes {
+                          name
                           value
                           projectField{
                             settings
