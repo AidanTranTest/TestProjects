@@ -47,6 +47,9 @@ jobs:
                   items(first: 20) {
                     nodes {
                       title
+                      content {
+                        closed
+                      }
                       fieldValues(first: 20) {
                         nodes {
                           value
