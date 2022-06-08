@@ -28,10 +28,12 @@ jobs:
           projects="$(gh api graphql -f org=$OWNER -F number=$PROJECT_NUMBER -f query='
             query($org: String! $number: Int!) {
               organization(login: $org) {
-                projectNextItems(number: $number) {
-                  edges {
-                    node {
-                      title
+                projectNext(number: $number) {
+                  items {
+                    edges {
+                      node {
+                        title
+                      }
                     }
                   }
                 }
