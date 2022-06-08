@@ -1,32 +1,32 @@
 # This is workflow checks a given project board every 5th minute and closes all of the issues in the 'done' column.
+# This workflow requires a Personal Access Key with org:read and org:write permissions, and the ability to read the repositories. 
+# To opt in a project to this pipeline, refer to the matrix strategy comment.
 
 name: close-done-issues
 
-# Controls when the workflow will run
 on: 
-  push:
   # schedule: # Workflow will run every 5th minute. 
   #   - cron: "*/5 * * * *"
-  # # Allows you to run this workflow manually from the Actions tab
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-
-
-env:
-  TARGET_PROJECT: TestBacklog
-
 
 jobs:
   close-done-issues:
     strategy:
       matrix:
-        PROJECT_ENTRY: [[1,"Done"], [2,"DoneMalone"]]
+      # To add a project to the this Action, add an entry with the ID of your project (beta) (The last number in the url) and the title of your functioning "Done" column.
+        PROJECT_ENTRY: [[1,"Done"], [2,"TestDoneColumnName"]]
     runs-on: ubuntu-latest
     env: 
+    # Replace the below secret with an iTwin PAT. Needs read:ord and write:org and public_repo. Might need more permissions for private repos.
       GITHUB_TOKEN: ${{ secrets.PROJECT_ISSUE_CLOSING_PAT }}
       OWNER: ${{ github.repository_owner }}
     steps:
       - name: Get ID of Done Status in Project
         run: |
+          # This query will look through all of the fields in a project (beta) for the field that is named "Status" 
+          # Then it store the id of the column you labeled as "Done" from the settings value in DONE_OPTION_ID.
+
           gh api graphql -f org=$OWNER -F number=${{ matrix.PROJECT_ENTRY[0] }} -f query='
             query($org: String! $number: Int!) {
               organization(login: $org) {
@@ -46,7 +46,7 @@ jobs:
       
       - name: Get list of matching issues
         run: | 
-          echo ${{ env.DONE_OPTION_ID }}
+          # This query will look through all of the issues in a project (beta) and generate a list of IDs of the items that are "Open" and in the column marked "Done".
           gh api graphql -f org=$OWNER -F number=${{ matrix.PROJECT_ENTRY[0] }} -f query='
             query($org: String! $number: Int!) {
               organization(login: $org) {
@@ -61,6 +61,7 @@ jobs:
                         }
                         ... on PullRequest {
                           id
+                          closed
                         }
                         ... on DraftIssue {
                           id
@@ -86,6 +87,7 @@ jobs:
            echo 'ISSUES_TO_CLOSE'=$(jq '.data.organization.projectNext.items.nodes[] | select(.content.closed== false) | select(.fieldValues.nodes[].value== ${{ env.DONE_OPTION_ID }}) |.content.id' project_data_2.json)  >> $GITHUB_ENV
       - name: Close issues
         run: | 
+          # This final step uses the items list generated in the previous step to loop through and close them.
           for issue_id in ${{ env.ISSUES_TO_CLOSE }};
           do
             itemType="$(gh api graphql -f id=$issue_id -f query='
@@ -98,6 +100,7 @@ jobs:
 
 
             if [[ $itemType == "Issue" ]]; then
+              # Closes the issue
               gh api graphql -f id=$issue_id -f query='
                 mutation($id: ID!) {
                   closeIssue(input: {issueId: $id stateReason: COMPLETED})
@@ -109,6 +112,7 @@ jobs:
                 }
               ' >/dev/null
             elif [[ $itemType == "PullRequest" ]]; then
+              # Uncomment the below code to perform closing of open PRs in the "Done" column.
               # gh api graphql -f id=$issue_id -f query='
               #   mutation($id: ID!) {
               #     closePullRequest(input: {pullRequestId: $id})
