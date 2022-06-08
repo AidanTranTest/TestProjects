@@ -102,11 +102,23 @@ jobs:
                 mutation($id: ID!) {
                   closeIssue(input: {issueId: $id stateReason: COMPLETED})
                   {
+                    issue {
+                      id
+                    }
                   }
                 }
-              '
+              ' >/dev/null
             elif [[ $itemType == "PullRequest" ]]; then
-              echo test
+              gh api graphql -f id=$issue_id -f query='
+                mutation($id: ID!) {
+                  closePullRequest(input: {pullRequestId: $id})
+                  {
+                    pullRequest {
+                      id
+                    }
+                  }
+                }
+              ' >/dev/null
             else
               echo "Unknown item type, doing nothing"
             fi
