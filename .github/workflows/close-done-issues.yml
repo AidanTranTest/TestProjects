@@ -28,7 +28,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PROJECT_ISSUE_CLOSING_PAT }}
           OWNER: ${{ github.repository_owner }}
           PROJECT_NUMBER: 1
-      - run: |
+        run: |
           projects="$(gh api graphql -f org=$OWNER -F number=$PROJECT_NUMBER -f query='
             query($org: String! $number: Int!) {
               organization(login: $org) {
