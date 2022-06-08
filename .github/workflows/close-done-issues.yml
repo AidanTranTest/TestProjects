@@ -81,9 +81,9 @@ jobs:
                 }
               }
             }
-          ' > project_data_2.json
+          ' --jq '.data.organization.projectNext.items.nodes[]' | jq -s > project_data_2.json
            cat project_data_2.json
-          #  echo 'ISSUES_TO_CLOSE'=$(jq '.data.organization.projectNext.items.nodes[] | select(.content.closed== false) | select(.fieldValues.nodes[].value== ${{ env.DONE_OPTION_ID }}) |.content.id' project_data_2.json)  >> $GITHUB_ENV
+          #  echo 'ISSUES_TO_CLOSE'=$(jq 'select(content.closed== false) | select(fieldValues.nodes[].value== ${{ env.DONE_OPTION_ID }}) |content.id' project_data_2.json)  >> $GITHUB_ENV
       - name: Close issues
         run: | 
           # This final step uses the items list generated in the previous step to loop through and close them.
