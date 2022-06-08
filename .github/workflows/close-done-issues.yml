@@ -18,28 +18,32 @@ env:
 jobs:
   close-done-issues:
     runs-on: ubuntu-latest
+    env: 
+      GITHUB_TOKEN: ${{ secrets.PROJECT_ISSUE_CLOSING_PAT }}
+      OWNER: ${{ github.repository_owner }}
+      PROJECT_NUMBER: 1
     steps:
-      - name: Get Project Data
-        env: 
-          GITHUB_TOKEN: ${{ secrets.PROJECT_ISSUE_CLOSING_PAT }}
-          OWNER: ${{ github.repository_owner }}
-          PROJECT_NUMBER: 1
+      - name: Get ID of Done Status in Project
         run: |
-          # projects="$(gh api graphql -f org=$OWNER -F number=$PROJECT_NUMBER -f query='
-          #   query($org: String! $number: Int!) {
-          #     organization(login: $org) {
-          #       projectNext(number: $number) {
-          #         items(first: 20) {
-          #           nodes {
-          #             id
-          #             title
-          #           }
-          #         }
-          #       }
-          #     }
-          #   }
-          # ')"
+          gh api graphql -f org=$OWNER -F number=$PROJECT_NUMBER -f query='
+            query($org: String! $number: Int!) {
+              organization(login: $org) {
+                projectNext(number: $number) {
+                  fields(first: 20) {
+                    nodes {
+                      id
+                      name
+                      settings
+                    }
+                  }
+                }
+              }
+            }
+          ' > project_data.json
 
+          echo 'DONE_OPTION_ID='$(jq '.data.organization.projectNext.fields.nodes[] | select(.name== "Status") |.settings | fromjson.options[] | select(.name=="Done") |.id' project_data.json) >> $GITHUB_ENV
+      - name: Get list of matching issues
+        run: | 
           projects="$(gh api graphql -f org=$OWNER -F number=$PROJECT_NUMBER -f query='
             query($org: String! $number: Int!) {
               organization(login: $org) {
