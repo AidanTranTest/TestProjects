@@ -4,7 +4,7 @@ name: close-done-issues
 
 # Controls when the workflow will run
 on: 
-  push:
+  # push:
   # schedule: # Workflow will run every 5th minute. 
   #   - cron: "*/5 * * * *"
   # # Allows you to run this workflow manually from the Actions tab
@@ -94,7 +94,6 @@ jobs:
                 }
               }
             ' --jq '.data.node.__typename')"
-            echo $itemType
 
 
             if [[ $itemType == "Issue" ]]; then
@@ -120,7 +119,7 @@ jobs:
                 }
               ' >/dev/null
             else
-              echo "Unknown item type, doing nothing"
+              echo "$itemType is not an Issue or PullRequest, doing nothing"
             fi
           done
           
