@@ -30,7 +30,7 @@ jobs:
               organization(login: $org) {
                 projectNext(number: $number) {
                   fields(first: 20) {
-                    node {
+                    nodes {
                       id
                       name
                       settings
