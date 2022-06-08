@@ -26,7 +26,7 @@ jobs:
       - run: |
           echo $OWNER
 
-          echo $GITHUB_TOKEN | gh auth login --with-token
+          echo $MY_TOKEN | gh auth login --with-token
 
           my_org="AidanTranTest"
           numberQuery=5
@@ -42,7 +42,7 @@ jobs:
 
           echo 'Projects='$projects
         env:
-          GITHUB_TOKEN: ${{ secrets.PROJECT_ISSUE_CLOSING_PAT }}
+          MY_TOKEN: ${{ secrets.PROJECT_ISSUE_CLOSING_PAT }}
           OWNER: ${{ github.repository_owner }}
           # REPO: ${{ github.event.repository.name }}
 
