@@ -29,7 +29,13 @@ jobs:
             query($org: String! $number: Int!) {
               organization(login: $org) {
                 projectNext(number: $number) {
-                  id
+                  projectNextItems {
+                    edges {
+                      node {
+                        title
+                      }
+                    }
+                  }
                 }
               }
             }
