@@ -32,7 +32,7 @@ jobs:
                   items(first: 20) {
                     nodes {
                       id
-                      name
+                      title
                     }
                   }
                 }
