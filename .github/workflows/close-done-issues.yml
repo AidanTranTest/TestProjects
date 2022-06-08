@@ -50,6 +50,9 @@ jobs:
                       fieldValues(first: 20) {
                         nodes {
                           value
+                          projectField{
+                            settings
+                          }
                         }
                       }
                     }
