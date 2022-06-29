@@ -59,14 +59,6 @@ jobs:
                           id
                           closed
                         }
-                        # ... on PullRequest {
-                        #   id
-                        #   closed
-                        # }
-                        # ... on DraftIssue {
-                        #   id
-                        # }
-
                       }
                       # Assuming there is less than 100 field values.
                       fieldValues(first: 100) {
@@ -95,31 +87,26 @@ jobs:
           for issue_id in ${{ env.ISSUES_TO_CLOSE }};
           do
             # Grabs the item type, there can be different functionality between Issues, PullRequests, and DraftIssues
-            itemType="$(gh api graphql -f id=$issue_id -f query='
-              query($id: ID!) {
-                node(id: $id) {
-                  __typename
-                }
-              }
-            ' --jq '.data.node.__typename')"
+            # itemType="$(gh api graphql -f id=$issue_id -f query='
+            #   query($id: ID!) {
+            #     node(id: $id) {
+            #       __typename
+            #     }
+            #   }
+            # ' --jq '.data.node.__typename')"
 
-
-            if [[ $itemType == "Issue" ]]; then
-              # Closes the issue
-              echo "Closing issue with id: $issueId"
-              gh api graphql -f id=$issue_id -f query='
-                mutation($id: ID!) {
-                  closeIssue(input: {issueId: $id stateReason: COMPLETED})
-                  {
-                    issue {
-                      id
-                    }
+            # Closes the issue
+            echo "Closing issue with id: $issue_id"
+            gh api graphql -f id=$issue_id -f query='
+              mutation($id: ID!) {
+                closeIssue(input: {issueId: $id stateReason: COMPLETED})
+                {
+                  issue {
+                    id
                   }
                 }
-              '
-            else
-              echo "$itemType is not an Issue, doing nothing"
-            fi
+              }
+            '
           done
           
 
