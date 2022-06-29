@@ -5,8 +5,8 @@
 name: close-done-issues
 
 on: 
-  schedule: # Workflow will run every 5th minute. 
-    - cron: "*/5 * * * *"
+  # schedule: # Workflow will run every 5th minute. 
+    # - cron: "*/5 * * * *"
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -59,13 +59,13 @@ jobs:
                           id
                           closed
                         }
-                        ... on PullRequest {
-                          id
-                          closed
-                        }
-                        ... on DraftIssue {
-                          id
-                        }
+                        # ... on PullRequest {
+                        #   id
+                        #   closed
+                        # }
+                        # ... on DraftIssue {
+                        #   id
+                        # }
 
                       }
                       # Assuming there is less than 100 field values.
@@ -106,6 +106,7 @@ jobs:
 
             if [[ $itemType == "Issue" ]]; then
               # Closes the issue
+              echo "Closing issue with id: $issueId"
               gh api graphql -f id=$issue_id -f query='
                 mutation($id: ID!) {
                   closeIssue(input: {issueId: $id stateReason: COMPLETED})
@@ -116,21 +117,8 @@ jobs:
                   }
                 }
               '
-            elif [[ $itemType == "PullRequest" ]]; then
-              # Uncomment the below code to perform closing of open PRs in the "Done" column.
-              # gh api graphql -f id=$issue_id -f query='
-              #   mutation($id: ID!) {
-              #     closePullRequest(input: {pullRequestId: $id})
-              #     {
-              #       pullRequest {
-              #         id
-              #       }
-              #     }
-              #   }
-              # ' >/dev/null
-              echo This is a Pull Request, doing nothing.
             else
-              echo "$itemType is not an Issue or PullRequest, doing nothing"
+              echo "$itemType is not an Issue, doing nothing"
             fi
           done
           
